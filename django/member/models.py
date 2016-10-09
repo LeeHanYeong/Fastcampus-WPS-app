@@ -26,8 +26,13 @@ class User(AbstractUser, PermissionsMixin):
     objective_type = models.CharField('목표', max_length=20, choices=CHOICES_OBJECTIVE)
     objective_detail = models.TextField('상세 목표', blank=True)
 
+    REQUIRED_FIELDS = []
+
     def __str__(self):
         return '%s (%s)' % (self.get_full_name(), self.course.full_title)
 
     def get_full_name(self):
+        return '%s%s' % (self.last_name, self.first_name)
+
+    def get_short_name(self):
         return '%s%s' % (self.last_name, self.first_name)
