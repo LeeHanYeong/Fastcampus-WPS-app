@@ -13,6 +13,10 @@ STATICFILES_DIRS = (
     STATIC_DIR,
 )
 
+for k in os.environ:
+    print('%s : %s' % (k, os.environ[k]))
+
+
 AUTH_USER_MODEL = 'member.FastcampusUser'
 
 INSTALLED_APPS = [
