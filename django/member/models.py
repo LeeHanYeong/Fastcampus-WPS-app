@@ -17,7 +17,6 @@ class FastcampusUserManager(BaseUserManager):
     def create_superuser(self, username, password):
         user = self.model(
             username=username,
-            name='Admin',
         )
         user.set_password(password)
         user.is_staff = True
@@ -47,7 +46,7 @@ class FastcampusUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField('성', max_length=30)
     first_name = models.CharField('이름', max_length=30)
     email = models.EmailField('이메일')
-    course = models.ForeignKey(Course, verbose_name='수강 코스')
+    course = models.ForeignKey(Course, verbose_name='수강 코스', null=True)
     github = models.CharField('GitHub계정 이름', max_length=50)
     age = models.IntegerField('나이', default=0)
     objective_type = models.CharField('목표', max_length=20, choices=CHOICES_OBJECTIVE)
