@@ -7,6 +7,7 @@
 
 # Directories
 /static_root/
+static_root/
 /media/
 less/
 dists/
