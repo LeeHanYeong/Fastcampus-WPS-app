@@ -1,6 +1,6 @@
 from django.db import models
 from fastcampus.models import BaseModel
-from member.models import User
+from member.models import FastcampusUser as User
 
 
 class Quiz(BaseModel):
