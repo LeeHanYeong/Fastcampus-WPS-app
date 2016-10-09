@@ -1,6 +1,6 @@
 from django.db import models
 from fastcampus.models import BaseModel
-from member.models import FastcampusUser as User
+# from member.models import FastcampusUser as User
 
 
 class Quiz(BaseModel):
@@ -12,7 +12,7 @@ class Quiz(BaseModel):
 
 
 class Answer(BaseModel):
-    user = models.ForeignKey(User)
+    # user = models.ForeignKey(User)
     quiz = models.ForeignKey(Quiz)
     content = models.TextField()
 
