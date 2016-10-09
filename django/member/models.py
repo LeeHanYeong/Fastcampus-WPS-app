@@ -4,6 +4,29 @@ from fastcampus.models import BaseModel
 from course.models import Course
 
 
+class FastcampusUserManager(BaseUserManager):
+    def create_user(self, username, password=None):
+        user = self.model(
+            username=username,
+        )
+        user.is_active = True
+        user.set_password(password)
+        user.save(using=self.db)
+        return user
+
+    def create_superuser(self, username, password):
+        user = self.model(
+            username=username,
+            name='Admin',
+        )
+        user.set_password(password)
+        user.is_staff = True
+        user.is_active = True
+        user.is_superuser = True
+        user.save(using=self.db)
+        return user
+
+
 class FastcampusUser(AbstractBaseUser, PermissionsMixin):
     CHOICES_OBJECTIVE = (
         ('job', '취업'),
@@ -36,6 +59,8 @@ class FastcampusUser(AbstractBaseUser, PermissionsMixin):
 
     REQUIRED_FIELDS = [username]
     USERNAME_FIELD = 'username'
+
+    objects = FastcampusUserManager()
 
     def __str__(self):
         return '%s (%s)' % (self.get_full_name(), self.course.full_title)
