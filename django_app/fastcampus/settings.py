@@ -13,7 +13,7 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join(BASE_DIR, '../static_root')
 
 # AWS
-if 'EB_IS_COMMAND_LEADER' in os.environ or STATIC_S3:
+if 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ or STATIC_S3:
     AWS_HEADERS = {
         'Expires': 'Thu, 31 Dec 2199 20:00:00 GMT',
         'Cache-Control': 'max-age=94608000',
@@ -93,7 +93,7 @@ TEMPLATES = [
     },
 ]
 
-if 'EB_IS_COMMAND_LEADER' in os.environ:
+if 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ :
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
