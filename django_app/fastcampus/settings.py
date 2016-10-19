@@ -69,10 +69,6 @@ INSTALLED_APPS = [
 
     'course',
     'member',
-    'quiz',
-    'ref',
-    'through',
-    'queries',
     'projects.blog',
     'projects.video',
 ]
