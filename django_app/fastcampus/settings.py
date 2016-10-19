@@ -11,6 +11,7 @@ STATICFILES_DIRS = (
     STATIC_DIR,
 )
 STATIC_ROOT = os.path.join(BASE_DIR, '../static_root')
+COMPRESS_ROOT = STATIC_ROOT
 # for k in os.environ:
 #     print(k, os.environ[k])
 
@@ -34,8 +35,10 @@ if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_
     DEFAULT_FILE_STORAGE = 'fastcampus.custom_storages.MediaStorage'
 
     COMPRESS_LOCATION = 'compress'
-    COMPRESS_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, COMPRESS_LOCATION)
-    COMPRESS_STORAGE = 'fastcampus.custom_storages.CompressStorage'
+    COMPRESS_URL = STATIC_URL
+    COMPRESS_STORAGE = STATICFILES_STORAGE
+    # COMPRESS_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, COMPRESS_LOCATION)
+    # COMPRESS_STORAGE = 'fastcampus.custom_storages.CompressStorage'
 else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
     STATIC_URL = '/static/'
