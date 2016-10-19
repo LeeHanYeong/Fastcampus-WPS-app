@@ -1,0 +1,56 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+
+
+<div class="post-list">
+  <h1 class="post-list-title">Post list</h1>
+  {% for post in post_list %}
+  <div class="post-item">
+    <p class="post-published">{{ post.published_date|default:"모름" }}</p>
+    <h4 class="post-title"><a href="{% url 'blog:post_detail' pk=post.pk %}">{{ post.title }}</a></h4>
+    <p class="post-text">{{ post.text|linebreaksbr|truncatechars:300 }}</p>
+  </div>
+  {% endfor %}
+
+  <nav>
+    <ul class="pagination">
+      {% if post_list.has_previous %}
+      <li>
+        <a href="?page={{ post_list.previous_page_number }}">
+          <span>&laquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="disabled">
+        <a href="#">
+          <span>&laquo;</span>
+        </a>
+      </li>
+      {% endif %}
+
+      {% for num in post_list.paginator.page_range %}
+      <li class="{% if num == post_list.number %}active{% endif %}">
+        <a href="?page={{ num }}">{{ num }}</a>
+      </li>
+      {% endfor %}
+
+      {% if post_list.has_next %}
+      <li>
+        <a href="?page={{ post_list.next_page_number }}">
+          <span>&raquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="disabled">
+        <a href="#">
+          <span>&raquo;</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+
+
+{% endblock %}

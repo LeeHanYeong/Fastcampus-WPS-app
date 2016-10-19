@@ -1,0 +1,32 @@
+{% extends 'common/base.html' %}
+{% load humanize %}
+{% load app_filters %}
+
+{% block content %}
+<div id="bookmark-list">
+	<h3>Bookmark list</h3>
+	<a href="{% url 'video:search' %}" class="btn btn-primary btn-search">
+		Search videos
+		<span class="glyphicon glyphicon-chevron-right"></span>
+	</a>
+
+	{% if not videos %}<h5>Video bookmark does not exist</h5>{% endif %}
+	<ul class="video-list">
+		{% for video in videos %}
+		<li class="video-item">
+			<img src="{{ video.thumbnail_url }}" alt="" class="item-thumbnail">
+			<div class="item-content">
+				<div>
+					<div class="item-title"><a href="{% url 'video:bookmark_detail' pk=video.pk %}">{{ video.title }}</a></div>
+					<div class="item-description">{{ video.description|truncatechars:100 }}</div>
+				</div>
+			</div>
+			<div class="item-info">
+				<div class="item-published">게시일자 : {{ video.published_date|date:"Y.m.d" }}</div>
+			</div>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+
+{% endblock %}

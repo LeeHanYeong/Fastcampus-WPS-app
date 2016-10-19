@@ -1,0 +1,29 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<h3>로그인 되어있습니다</h3>
+<p>{{ user.username }} 사용자</p>
+<form action="/member/logout/">
+	<button type="submit" class="btn btn-primary">로그아웃하기</button>
+</form>
+{% else %}
+<div class="col-md-6 col-md-offset-3">
+	<h3 class="text-center">Login</h3>
+	<form action="" method="POST" class="form">
+		<div class="form-group">
+			<label for="input-username">Username</label>
+			<input id="input-username" type="text" name="email" class="form-control">
+		</div>
+
+		<div class="form-group">
+			<label for="input-password">Password</label>
+			<input id="input-password" type="password" name="password" class="form-control">
+		</div>
+		<button type="submit" class="btn btn-primary">Login</button>
+	</form>
+</div>
+<a href="https://www.facebook.com/dialog/oauth?client_id=687819251371707&response_type=code&scope=user_friends,public_profile,email&redirect_uri=http://localhost:8081/member/login/facebook/">페이스북 로그인</a>
+{% endif %}
+{% endblock %}

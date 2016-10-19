@@ -1,0 +1,65 @@
+{% extends 'common/base.html' %}
+{% load humanize %}
+{% load app_filters %}
+
+{% block content %}
+<div id="video-detail">
+	{% for item in response.items %}
+	<div class="video-detail-item">
+		<div class="item-info">
+			<h3 class="item-title">{{ item.snippet.title }}</h3>
+		</div>
+
+		<div class="item-player embed-responsive embed-responsive-16by9">
+			<iframe
+				class="embed-responsive-item"
+				width="560"
+				height="315"
+				src="https://www.youtube.com/embed/{{ item.id }}"
+				frameborder="0"
+				allowfullscreen>
+			</iframe>
+		</div>
+
+		<div class="item-bottom-info">
+			<p class="item-description">{{ item.snippet.description }}</p>
+			<p class="item-published">게시일자 : {{ item.snippet.publishedAt|string_to_date|date:"Y.m.d h:i" }}</p>
+
+			<div class="item-bookmark">
+				{% if item.is_exist %}
+				<button class="btn btn-warning btn-sm">Already added</button>
+				{% else %}
+				<form action="{% url 'video:bookmark_add' %}" method="POST">{% csrf_token %}
+					{{ item.form }}
+					<button type="submit" class="btn btn-success btn-sm">Add bookmark</button>
+				</form>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="item-stats">
+			<div><strong>Stats</strong></div>
+			<span class="item-stat label label-primary">
+				<span class="glyphicon glyphicon-play"></span> {{ item.statistics.viewCount|intcomma }}
+			</span>
+			<span class="item-stat label label-primary">
+				<span class="glyphicon glyphicon-thumbs-up"></span> {{ item.statistics.likeCount|intcomma }}
+			</span>
+			<span class="item-stat label label-primary">
+				<span class="glyphicon glyphicon-comment"></span> {{ item.statistics.commentCount|intcomma }}
+			</span>
+		</div>
+
+		<div class="item-tags">
+			<div><strong>Tags</strong></div>
+			{% for tag in item.snippet.tags %}
+			<span class="label label-default item-tag">{{ tag }}</span>
+			{% endfor %}
+		</div>
+	</div>
+
+
+{% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'common/base.html' %}
+{% load humanize %}
+{% load app_filters %}
+
+{% block content %}
+<div id="video-detail">
+	<div class="video-detail-item">
+		<div class="item-info">
+			<h3 class="item-title">{{ video.title }}</h3>
+		</div>
+
+		<div class="item-player embed-responsive embed-responsive-16by9">
+			<iframe
+				class="embed-responsive-item"
+				width="560"
+				height="315"
+				src="https://www.youtube.com/embed/{{ video.youtube_id }}"
+				frameborder="0"
+				allowfullscreen>
+			</iframe>
+		</div>
+
+		<div class="item-bottom-info">
+			<p class="item-description">{{ video.description }}</p>
+			<p class="item-published">게시일자 : {{ video.published_date|date:"Y.m.d h:i" }}</p>
+		</div>
+	</div>
+</div>
+{% endblock %}

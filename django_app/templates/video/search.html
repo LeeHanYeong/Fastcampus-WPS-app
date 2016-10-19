@@ -1,0 +1,85 @@
+{% extends 'common/base.html' %}
+{% load humanize %}
+{% load app_filters %}
+
+{% block content %}
+<div id="video-search">
+	<a href="{% url 'video:bookmark_list' %}" class="btn btn-primary btn-back">
+		<span class="glyphicon glyphicon-chevron-left"></span>
+		Bookmark list
+	</a>
+	<div class="top-container">
+		{% if keyword %}
+		<h3>"{{ keyword }}" 검색결과 (총 {{ response.pageInfo.totalResults|intcomma }}건)</h3>
+		{% else %}
+		<h3>Youtube 검색하기</h3>
+		{% endif %}
+		<form action="" method="GET">
+			<input
+				type="text"
+				class="form-control"
+				name="keyword"
+				placeholder="검색어를 입력해주세요">
+		</form>
+	</div>
+
+
+	<ul class="video-list">
+		{% for item in response.items %}
+		<li class="video-item">
+			<img src="{{ item.snippet.thumbnails.high.url }}" alt="" class="item-thumbnail">
+			<div class="item-content">
+				<div>
+					<div class="item-title"><a href="{% url 'video:search_detail' video_id=item.id %}">{{ item.snippet.title }}</a></div>
+					<div class="item-description">{{ item.snippet.description|truncatechars:100 }}</div>
+				</div>
+				<div class="item-stats">
+					<span class="item-stat label label-primary">
+						<span class="glyphicon glyphicon-play"></span> {{ item.statistics.viewCount|intcomma }}
+					</span>
+					<span class="item-stat label label-primary">
+						<span class="glyphicon glyphicon-thumbs-up"></span> {{ item.statistics.likeCount|intcomma }}
+					</span>
+					<span class="item-stat label label-primary">
+						<span class="glyphicon glyphicon-comment"></span> {{ item.statistics.commentCount|intcomma }}
+					</span>
+				</div>
+			</div>
+			<div class="item-info">
+				<div class="item-published">게시일자 : {{ item.snippet.publishedAt|string_to_date|date:"Y.m.d" }}</div>
+				<div class="item-tags">
+					{% for tag in item.snippet.tags|slice:":5" %}
+					<span class="label label-default item-tag">{{ tag }}</span>
+					{% endfor %}
+					{% if item.snippet.tags|length > 5 %}
+					<span class="label label-default item-tag">+{{ item.snippet.tags|length|add:"-5" }}</span>
+					{% endif %}
+				</div>
+			</div>
+			<div class="item-bookmark">
+				{% if item.is_exist %}
+				<button class="btn btn-warning btn-sm">Already added</button>
+				{% else %}
+				<form action="{% url 'video:bookmark_add' %}" method="POST">{% csrf_token %}
+					{{ item.form }}
+					<input type="hidden" name="path" value="{{ request.get_full_path }}">
+					<button type="submit" class="btn btn-success btn-sm">Add bookmark</button>
+				</form>
+				{% endif %}
+			</div>
+		</li>
+		{% endfor %}
+	</ul>
+	<div class="search-bottom-btn-container">
+		{% if response.prevPageToken %}
+		<a class="btn btn-primary" href="{% url 'video:search' %}?keyword={{ keyword }}&pageToken={{ response.prevPageToken }}">이전페이지</a>
+
+		<a class="btn btn-info" href="{% url 'video:search' %}?keyword={{ keyword }}">첫 페이지</a>
+		{% endif %}
+
+		{% if response.nextPageToken %}
+		<a class="btn btn-primary" href="{% url 'video:search' %}?keyword={{ keyword }}&pageToken={{ response.nextPageToken }}">다음페이지</a>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

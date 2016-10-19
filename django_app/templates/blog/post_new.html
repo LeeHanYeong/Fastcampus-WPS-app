@@ -1,0 +1,19 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div>
+  <h2>Add new post</h2>
+  <form action="" method="POST" class="">{% csrf_token %}
+	  <div class="form-group">
+	    {{ form.title.label_tag }}
+		  {{ form.title }}
+	  </div>
+
+	  <div class="form-group">
+		  {{ form.text.label_tag }}
+		  {{ form.text }}
+	  </div>
+    <button type="submit" class="save btn btn-primary">Save</button>
+  </form>
+</div>
+{% endblock %}

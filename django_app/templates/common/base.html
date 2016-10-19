@@ -1,0 +1,101 @@
+{% load staticfiles %}
+{% load compress %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Youtube application</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
+
+  <!-- Custom CSS -->
+  {% compress css %}
+  <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/common.sass' %}">
+  <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/video.sass' %}">
+  {% endcompress %}
+</head>
+<body>
+  <nav class="navbar navbar-static-top navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a href="{% url 'blog:post_list' %}" class="navbar-brand">
+          <img src="{% static 'img/azelf.gif' %}" alt="" class="img-brand">
+          lhy's Django practice site
+        </a>
+      </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          {% if user.is_authenticated %}
+          <li>
+            <p class="navbar-text login">Login<br><strong>{{ user.email }}</strong></p>
+          </li>
+          <li>
+            <a href="{% url 'blog:post_list' %}">Blog</a>
+          </li>
+          <li>
+            <a href="{% url 'video:bookmark_list' %}">Video</a>
+          </li>
+          <!--<li>-->
+            <!--<a href="{% url 'blog:post_new' %}">-->
+              <!--<span class="glyphicon glyphicon-plus"></span> New Post-->
+            <!--</a>-->
+          <!--</li>-->
+          <li>
+            <a href="{% url 'member:logout' %}">Logout</a>
+          </li>
+          {% else %}
+          <li>
+            <a href="{% url 'member:login' %}?{{ request.path }}">Login</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    {% if messages %}
+      {% for message in messages %}
+      <div class="message-container">
+        <div class="alert alert-dismissible fade in
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}alert-danger
+          {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}alert-warning
+          {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}alert-success
+          {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}alert-info
+          {% elif message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}alert-danger
+          {% endif %}" role="alert">{{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+
+    <!--<div class="top-container">-->
+      <!--<img src="{% static 'img/Azelf02.jpg' %}" alt="" class="img-circle img-top-profile">-->
+      <!--<p class="top-title">lhy</p>-->
+      <!--<p class="top-description">Django, AngularJS Programmer</p>-->
+    <!--</div>-->
+
+    <div>
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
+
+  <!-- jQuery -->
+  <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+  <!-- Bootstrap JS -->
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+</body>
+</html>
