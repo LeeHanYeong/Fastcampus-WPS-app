@@ -11,8 +11,9 @@ STATICFILES_DIRS = (
     STATIC_DIR,
 )
 STATIC_ROOT = os.path.join(BASE_DIR, '../static_root')
+
 # AWS
-if 'RDS_HOSTNAME' in os.environ or STATIC_S3:
+if 'EB_IS_COMMAND_LEADER' in os.environ or STATIC_S3:
     AWS_HEADERS = {
         'Expires': 'Thu, 31 Dec 2199 20:00:00 GMT',
         'Cache-Control': 'max-age=94608000',
@@ -92,15 +93,20 @@ TEMPLATES = [
     },
 ]
 
-if 'RDS_HOSTNAME' in os.environ:
+if 'EB_IS_COMMAND_LEADER' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
+            'NAME': 'fastcampus',
+            'USER': 'lhy',
+            'PASSWORD': 'gksdud!027',
+            'HOST': 'fastcampus.cryfbwalveyh.ap-northeast-2.rds.amazonaws.com',
+            'PORT': '5432',
+            # 'NAME': os.environ['RDS_DB_NAME'],
+            # 'USER': os.environ['RDS_USERNAME'],
+            # 'PASSWORD': os.environ['RDS_PASSWORD'],
+            # 'HOST': os.environ['RDS_HOSTNAME'],
+            # 'PORT': os.environ['RDS_PORT'],
         },
     }
 else:
