@@ -5,6 +5,9 @@
 
 .python-version
 
+# Cache directories
+.sass-cache/
+
 # Directories
 /static_root/
 static_root/

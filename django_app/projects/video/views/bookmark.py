@@ -14,7 +14,7 @@ def bookmark_list(request):
     context = {
         'videos': videos
     }
-    return render(request, 'video/bookmark_list.html', context)
+    return render(request, 'projects/video/bookmark_list.html', context)
 
 
 def bookmark_add(request):
@@ -38,4 +38,4 @@ def bookmark_detail(request, pk):
     context = {
         'video': video,
     }
-    return render(request, 'video/bookmark_detail.html', context)
+    return render(request, 'projects/video/bookmark_detail.html', context)

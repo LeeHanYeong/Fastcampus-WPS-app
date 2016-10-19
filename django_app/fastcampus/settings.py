@@ -37,13 +37,23 @@ if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_
     COMPRESS_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, COMPRESS_LOCATION)
     COMPRESS_STORAGE = 'fastcampus.custom_storages.CompressStorage'
 else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
     STATIC_URL = '/static/'
     MEDIA_URL = '/media/'
 
-
+# Auth
 AUTH_USER_MODEL = 'member.MyUser'
+
+# django-compressor
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+# Django compressor
+COMPRESS_PRECOMPILERS = (
+    ('text/x-sass', 'sass {infile} {outfile}'),
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -52,6 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'storages',
     'compressor',

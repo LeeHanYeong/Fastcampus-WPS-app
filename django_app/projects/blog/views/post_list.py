@@ -27,4 +27,4 @@ def post_list(request):
         'title': '타이틀 변수는 title키를 이용해서 접근'
     }
 
-    return render(request, 'blog/post_list.html', context)
+    return render(request, 'projects/blog/post_list.html', context)

@@ -39,7 +39,7 @@ def search(request):
             'keyword': keyword,
             'response': response,
         }
-    return render(request, 'video/search.html', context)
+    return render(request, 'projects/video/search.html', context)
 
 
 def search_detail(request, video_id):
@@ -48,4 +48,4 @@ def search_detail(request, video_id):
     context = {
         'response': response,
     }
-    return render(request, 'video/search_detail.html', context)
+    return render(request, 'projects/video/search_detail.html', context)

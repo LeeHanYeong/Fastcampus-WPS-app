@@ -20,4 +20,4 @@ def post_new(request):
             return redirect('blog:post_detail', pk=post.pk)
     else:
         form = PostForm()
-        return render(request, 'blog/post_new.html', {'form': form})
+        return render(request, 'projects/blog/post_new.html', {'form': form})
