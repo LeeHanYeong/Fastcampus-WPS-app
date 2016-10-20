@@ -11,9 +11,9 @@
 {% else %}
 <div class="col-md-6 col-md-offset-3">
 	<h3 class="text-center">Login</h3>
-	<form action="" method="POST" class="form">
+	<form action="" method="POST" class="form">{% csrf_token %}
 		<div class="form-group">
-			<label for="input-username">Username</label>
+			<label for="input-username">Email</label>
 			<input id="input-username" type="text" name="email" class="form-control">
 		</div>
 
@@ -24,6 +24,7 @@
 		<button type="submit" class="btn btn-primary">Login</button>
 	</form>
 </div>
-<a href="https://www.facebook.com/dialog/oauth?client_id=687819251371707&response_type=code&scope=user_friends,public_profile,email&redirect_uri=http://localhost:8081/member/login/facebook/">페이스북 로그인</a>
+<!--<a href="https://www.facebook.com/dialog/oauth?client_id=687819251371707&response_type=code&scope=user_friends,public_profile,email&redirect_uri=http://localhost:8081/projects/member/login/facebook/?login_next=apple/abc">페이스북 로그인</a>-->
+<a href="https://www.facebook.com/dialog/oauth?client_id=687819251371707&response_type=code&scope=user_friends,public_profile,email&redirect_uri=http://localhost:8081/projects/member/login/facebook/">페이스북 로그인</a>
 {% endif %}
 {% endblock %}

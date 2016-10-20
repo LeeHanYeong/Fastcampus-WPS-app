@@ -16,6 +16,8 @@
   {% compress css %}
   <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/common.sass' %}">
   <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/video.sass' %}">
+  <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/blog.sass' %}">
+  <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/sns.sass' %}">
   {% endcompress %}
 </head>
 <body>
@@ -34,15 +36,18 @@
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-          {% if user.is_authenticated %}
-          <li>
-            <p class="navbar-text login">Login<br><strong>{{ user.email }}</strong></p>
-          </li>
           <li>
             <a href="{% url 'blog:post_list' %}">Blog</a>
           </li>
           <li>
             <a href="{% url 'video:bookmark_list' %}">Video</a>
+          </li>
+          <li>
+            <a href="{% url 'sns:index' %}">SNS</a>
+          </li>
+          {% if user.is_authenticated %}
+          <li>
+            <p class="navbar-text login">Login<br><strong>{{ user.email }}</strong></p>
           </li>
           <!--<li>-->
             <!--<a href="{% url 'blog:post_new' %}">-->
@@ -54,7 +59,7 @@
           </li>
           {% else %}
           <li>
-            <a href="{% url 'member:login' %}?{{ request.path }}">Login</a>
+            <a href="{% url 'member:login' %}?login_next={% if login_next %}{{ login_next|safe }}{% else %}{{ request.get_full_path }}{% endif %}">Login</a>
           </li>
           {% endif %}
         </ul>

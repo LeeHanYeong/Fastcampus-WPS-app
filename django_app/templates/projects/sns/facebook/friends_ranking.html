@@ -1,0 +1,18 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div id="sns-facebook-friends-ranking">
+	<h3>Facebook friends ranking</h3>
+	<ul class="list-unstyled list-ranking">
+		{% for item in most_dict_list %}
+		<li>
+			<img src="{{ item.info.picture.data.url }}" alt="" class="pull-left img-profile">
+			<div class="vcenter">
+				<p class="item-title">[{{ forloop.counter}}위] {{ item.info.name }}</p>
+				<p class="item-description">내 타임라인에 작성한 댓글 수 : <strong>{{ item.number }}</strong></p>
+			</div>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}

@@ -1,19 +1,34 @@
 import os
 DEBUG = True
 STATIC_S3 = False
+# for k in os.environ:
+#     print(k, os.environ[k])
 
+# Directories
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SETTING_DIR = os.path.join(BASE_DIR, 'fastcampus')
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+
+
+# Staticfiles
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
     STATIC_DIR,
 )
 STATIC_ROOT = os.path.join(BASE_DIR, '../static_root')
+
+# django-compressor
 COMPRESS_ROOT = STATIC_ROOT
-# for k in os.environ:
-#     print(k, os.environ[k])
+COMPRESS_PRECOMPILERS = (
+    ('text/x-sass', 'sass {infile} {outfile}'),
+)
+
 
 # AWS
 if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ or STATIC_S3:
@@ -37,8 +52,6 @@ if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_
     COMPRESS_LOCATION = 'compress'
     COMPRESS_URL = STATIC_URL
     COMPRESS_STORAGE = STATICFILES_STORAGE
-    # COMPRESS_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, COMPRESS_LOCATION)
-    # COMPRESS_STORAGE = 'fastcampus.custom_storages.CompressStorage'
 else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
     STATIC_URL = '/static/'
@@ -46,17 +59,26 @@ else:
 
 # Auth
 AUTH_USER_MODEL = 'member.MyUser'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'member.backends.FacebookBackend',
+]
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
-# django-compressor
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
-)
-# Django compressor
-COMPRESS_PRECOMPILERS = (
-    ('text/x-sass', 'sass {infile} {outfile}'),
-)
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -74,6 +96,7 @@ INSTALLED_APPS = [
     'member',
     'projects.blog',
     'projects.video',
+    'projects.sns',
 ]
 
 
@@ -105,6 +128,8 @@ TEMPLATES = [
     },
 ]
 
+
+# Databases
 if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ :
     DATABASES = {
         'default': {
@@ -137,21 +162,8 @@ else:
     }
 
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
+# Other settings
 LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
