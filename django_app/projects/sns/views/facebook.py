@@ -21,7 +21,7 @@ def friends_ranking(request):
     APP_ID = '338774269808826'
     SECRET_ID = 'b780a89551228b4c1015c529a7667722'
     APP_ACCESS_TOKEN = '%s|%s' % (APP_ID, SECRET_ID)
-    URL_REDIRECT = '{}{}'.format('http://localhost:8081', reverse('sns:friends_ranking'))
+    URL_REDIRECT = '{}{}'.format('http://%s' % request['META']['HTTP_HOST'], reverse('sns:friends_ranking'))
 
     print('URL_REDIRECT : %s' % URL_REDIRECT)
     if request.GET.get('error'):

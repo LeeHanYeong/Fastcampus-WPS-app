@@ -76,7 +76,7 @@ def login_facebook(request):
     APP_ID = '338774269808826'
     SECRET_ID = 'b780a89551228b4c1015c529a7667722'
     APP_ACCESS_TOKEN = '%s|%s' % (APP_ID, SECRET_ID)
-    URL_LOGIN_FACEBOOK = '{}{}'.format('http://localhost:8081', reverse('member:login_facebook'))
+    URL_LOGIN_FACEBOOK = '{}{}'.format('http://%s' % request['META']['HTTP_HOST'], reverse('member:login_facebook'))
 
     # if login_next:
     #     URL_LOGIN_FACEBOOK = '%s?login_next=%s' % (URL_LOGIN_FACEBOOK, quote_login_next)
