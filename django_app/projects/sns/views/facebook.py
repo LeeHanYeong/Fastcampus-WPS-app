@@ -18,8 +18,8 @@ __all__ = [
 
 
 def friends_ranking(request):
-    APP_ID = '687819251371707'
-    SECRET_ID = '2481784215fed90a8dc8ecfc7b572196'
+    APP_ID = '338774269808826'
+    SECRET_ID = 'b780a89551228b4c1015c529a7667722'
     APP_ACCESS_TOKEN = '%s|%s' % (APP_ID, SECRET_ID)
     URL_REDIRECT = '{}{}'.format('http://localhost:8081', reverse('sns:friends_ranking'))
 
