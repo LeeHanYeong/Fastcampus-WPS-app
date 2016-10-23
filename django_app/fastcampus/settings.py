@@ -1,5 +1,7 @@
 import os
 DEBUG = True
+if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ:
+    DEBUG = False
 STATIC_S3 = False
 # for k in os.environ:
 #     print(k, os.environ[k])
@@ -31,7 +33,7 @@ COMPRESS_PRECOMPILERS = (
 
 
 # AWS
-if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ or STATIC_S3:
+if not DEBUG or STATIC_S3:
     AWS_HEADERS = {
         'Expires': 'Thu, 31 Dec 2199 20:00:00 GMT',
         'Cache-Control': 'max-age=94608000',
@@ -134,7 +136,7 @@ TEMPLATES = [
 
 
 # Databases
-if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ :
+if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -219,7 +221,6 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-
 # Other settings
 LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'
@@ -230,4 +231,9 @@ USE_TZ = True
 ROOT_URLCONF = 'fastcampus.urls'
 WSGI_APPLICATION = 'fastcampus.wsgi.application'
 SECRET_KEY = 'u*8!!mqh10rzxgdom1&1y%x1d&-8!$sd*#_lr9&n5mp5+nh_jy'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '.lhy.kr',
+    '.azelf.com',
+    '.amazonaws.com',
+    '.elasticbeanstalk.com',
+]
