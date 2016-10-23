@@ -74,7 +74,7 @@ def login_facebook(request):
     # quote_login_next = login_next
     # print('login_next : %s' % login_next)
     # print('quote_login_next : %s' % quote_login_next)
-    REDIRECT_URI = '{}{}'.format('http://%s' % request.META['HTTP_HOST'], reverse('member:login_facebook'))
+    REDIRECT_URI = '{}{}'.format('%s://%s' % (request.scheme, request.META['HTTP_HOST']), reverse('member:login_facebook'))
 
     if request.GET.get('error'):
         messages.error(request, '사용자에 의해 페이스북 로그인 거부')

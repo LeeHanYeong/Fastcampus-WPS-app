@@ -23,7 +23,7 @@ __all__ = [
 
 def friends_ranking(request):
     if request.method == 'GET':
-        redirect_uri = '{}{}'.format('http://%s' % request.META['HTTP_HOST'], reverse('sns:friends_ranking'))
+        redirect_uri = '{}{}'.format('%s://%s' % (request.scheme, request.META['HTTP_HOST']), reverse('sns:friends_ranking'))
 
         if request.GET.get('error'):
             messages.error(request, '사용자에 의해 페이스북 로그인 거부')
