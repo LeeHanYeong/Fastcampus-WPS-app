@@ -8,8 +8,15 @@ class FacebookBackend:
             user = User.objects.get(facebook_id=user_info.get('id'))
             return user
         except User.DoesNotExist:
-            user = User.objects.create_facebook_user(user_info)
-            return user
+            try:
+                user = User.objects.get(email=user_info.get('email'))
+                user.facebook_id = user_info.get('id')
+                user.is_facebook_user = True
+                user.save()
+                return user
+            except User.DoesNotExist:
+                user = User.objects.create_facebook_user(user_info)
+                return user
 
     def get_user(self, user_id):
         try:

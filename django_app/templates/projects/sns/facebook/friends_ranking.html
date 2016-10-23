@@ -1,7 +1,9 @@
 {% extends 'common/base.html' %}
 
 {% block content %}
-<div id="sns-facebook-friends-ranking">
+<form id="sns-facebook-friends-ranking" method="POST">{% csrf_token %}
+	<input type="text" name="access_token" value="{{ access_token }}">
+	<input type="text" name="facebook_user_id" value="{{ facebook_user_id }}">
 	<h3>Facebook friends ranking</h3>
 	<ul class="list-unstyled list-ranking">
 		{% for item in most_dict_list %}
@@ -12,7 +14,9 @@
 				<p class="item-description">내 타임라인에 작성한 댓글 수 : <strong>{{ item.number }}</strong></p>
 			</div>
 		</li>
+		<input name="item" type="text" value="{{ item }}">
 		{% endfor %}
 	</ul>
-</div>
+	<button class="btn btn-primary">전송</button>
+</form>
 {% endblock %}
