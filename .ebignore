@@ -122,3 +122,6 @@ zipcode.*
 # PyCharm
 .idea/
 workspace.xml
+
+!django_app/.conf/
+static_root/

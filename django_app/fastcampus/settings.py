@@ -1,16 +1,23 @@
+import json
 import os
+
+# Debug check
 DEBUG = True
 if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ:
     DEBUG = False
 STATIC_S3 = False
-# for k in os.environ:
-#     print(k, os.environ[k])
 
 # Directories
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CONF_DIR = os.path.join(BASE_DIR, '.conf')
 SETTING_DIR = os.path.join(BASE_DIR, 'fastcampus')
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
+# Read config file
+if DEBUG:
+    config = json.loads(open(os.path.join(CONF_DIR, 'settings_debug.json')).read())
+else:
+    config = json.loads(open(os.path.join(CONF_DIR, 'settings_deploy.json')).read())
 
 # Staticfiles
 STATICFILES_FINDERS = (
@@ -38,9 +45,9 @@ if not DEBUG or STATIC_S3:
         'Expires': 'Thu, 31 Dec 2199 20:00:00 GMT',
         'Cache-Control': 'max-age=94608000',
     }
-    AWS_STORAGE_BUCKET_NAME = 'fastcampus-s3'
-    AWS_ACCESS_KEY_ID = 'AKIAIJ6L2YNR3H3VQYYQ'
-    AWS_SECRET_ACCESS_KEY = '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'
+    AWS_STORAGE_BUCKET_NAME = config['aws']['AWS_STORAGE_BUCKET_NAME']
+    AWS_ACCESS_KEY_ID = config['aws']['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = config['aws']['AWS_SECRET_ACCESS_KEY']
     AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
     STATICFILES_LOCATION = 'static'
@@ -51,7 +58,6 @@ if not DEBUG or STATIC_S3:
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
     DEFAULT_FILE_STORAGE = 'fastcampus.custom_storages.MediaStorage'
 
-    COMPRESS_LOCATION = 'compress'
     COMPRESS_URL = STATIC_URL
     COMPRESS_STORAGE = STATICFILES_STORAGE
 else:
@@ -81,8 +87,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Facebook
-FACEBOOK_APP_ID = '338774269808826'
-FACEBOOK_SECRET_CODE = 'b780a89551228b4c1015c529a7667722'
+FACEBOOK_APP_ID = config['facebook']['FACEBOOK_APP_ID']
+FACEBOOK_SECRET_CODE = config['facebook']['FACEBOOK_SECRET_CODE']
 FACEBOOK_APP_ACCESS_TOKEN = '%s|%s' % (FACEBOOK_APP_ID, FACEBOOK_SECRET_CODE)
 
 
@@ -136,37 +142,15 @@ TEMPLATES = [
 
 
 # Databases
-if not DEBUG:
+if DEBUG:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'fastcampus',
-            'USER': 'lhy',
-            'PASSWORD': 'gksdud!027',
-            'HOST': 'fastcampus.cryfbwalveyh.ap-northeast-2.rds.amazonaws.com',
-            'PORT': '5432',
-            # 'NAME': os.environ['RDS_DB_NAME'],
-            # 'USER': os.environ['RDS_USERNAME'],
-            # 'PASSWORD': os.environ['RDS_PASSWORD'],
-            # 'HOST': os.environ['RDS_HOSTNAME'],
-            # 'PORT': os.environ['RDS_PORT'],
-        },
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'fastcampus',
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'POST': '5432',
-            'OPTIONS': {
-                # 'read_default_file': os.path.join(SETTING_DIR, 'db_local.cnf'),
-            },
-        },
-    }
-
+    DATABASES = config['databases']
 
 # Log
 DEFAULT_LOGGING = {
@@ -221,6 +205,17 @@ DEFAULT_LOGGING = {
 # SESSION_COOKIE_SECURE = True
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# Email
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config['email']['EMAIL_HOST']
+EMAIL_PORT = config['email']['EMAIL_PORT']
+EMAIL_HOST_USER = config['email']['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = config['email']['EMAIL_HOST_PASSWORD']
+EMAIL_USE_TLS = config['email']['EMAIL_USE_TLS']
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
 # Other settings
 LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'
@@ -231,9 +226,4 @@ USE_TZ = True
 ROOT_URLCONF = 'fastcampus.urls'
 WSGI_APPLICATION = 'fastcampus.wsgi.application'
 SECRET_KEY = 'u*8!!mqh10rzxgdom1&1y%x1d&-8!$sd*#_lr9&n5mp5+nh_jy'
-ALLOWED_HOSTS = [
-    '.lhy.kr',
-    '.azelf.com',
-    '.amazonaws.com',
-    '.elasticbeanstalk.com',
-]
+ALLOWED_HOSTS = config['allowedHosts']
