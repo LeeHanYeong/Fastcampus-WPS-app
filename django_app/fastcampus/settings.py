@@ -58,6 +58,7 @@ if not DEBUG or STATIC_S3:
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
     DEFAULT_FILE_STORAGE = 'fastcampus.custom_storages.MediaStorage'
 
+    COMPRESS_LOCATION = 'compress'
     COMPRESS_URL = STATIC_URL
     COMPRESS_STORAGE = STATICFILES_STORAGE
 else:

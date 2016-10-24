@@ -1,17 +1,14 @@
-import requests
-import json
 from collections import Counter
-from urllib.parse import quote
+
+import requests
+from django.contrib import messages
+from django.contrib.auth import authenticate, get_user_model
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+
 from apis import facebook
-from member.forms import LoginForm
 from ..models import FriendsRanking, FriendsRankingItem
+
 User = get_user_model()
 
 __all__ = [

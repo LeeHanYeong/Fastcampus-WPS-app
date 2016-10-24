@@ -2,7 +2,7 @@
 
 {% block content %}
 <div>
-	<a href="https://www.facebook.com/dialog/oauth?client_id=338774269808826&response_type=code&scope=user_friends,public_profile,email,user_posts&redirect_uri=http://{{ request.META.HTTP_HOST }}{% url 'sns:friends_ranking' %}" class="btn btn-primary">친구랭킹 매기기!</a>
+	<a href="https://www.facebook.com/dialog/oauth?client_id={{ facebook_app_id }}&response_type=code&scope=user_friends,public_profile,email,user_posts&redirect_uri=http://{{ request.META.HTTP_HOST }}{% url 'sns:friends_ranking' %}" class="btn btn-primary">친구랭킹 매기기!</a>
 	<a href="{% url 'sns:friends_ranking_saved_list' %}" class="btn btn-info">지난결과 보기</a>
 </div>
 {% endblock %}
