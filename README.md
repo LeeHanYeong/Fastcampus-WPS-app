@@ -102,6 +102,27 @@ pip install Pillow
 
 -
 
+#### RubyGems
+
+Sass파일 컴파일을 위해 RubyGems가 필요합니다.
+
+**macOS:**
+
+```
+brew install ruby
+sudo gem install compass
+```
+
+**Ubuntu:**
+
+```
+sudo apt-get install ruby-dev
+sudo apt-get install rubygems
+sudo gem install compass
+```
+
+-
+
 #### .conf폴더 추가
 
 `settings.py`파일에서 두 파일의 내용을 참조합니다.  
