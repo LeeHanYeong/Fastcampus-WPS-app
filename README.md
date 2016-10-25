@@ -91,11 +91,11 @@ pip install Pillow
 #### .conf폴더 추가
 
 `settings.py`파일에서 두 파일의 내용을 참조합니다.  
+로컬에서 `runserver`명령어로 테스트시, 배포용 설정파일은 필요하지 않습니다.  
 디버그용 설정파일 : `django_app/.conf/settings_debug.json`  
 배포용 설정파일 : `django_app/.conf/settings_deploy.json`
 
 아래와 같이 작성한 후, `django_app`폴더 아래에 `.conf`폴더를 생성 후 `settings_debug.json`이라는 이름으로 저장해줍니다.  
-<내용>의 값은 채워주어야 합니다. 디버그 모드에서는 `aws`키의 값들은 없어도 무관합니다.
 
 ```javascript
 {
@@ -106,17 +106,6 @@ pip install Pillow
     "EMAIL_HOST_USER": <Gmail account>,
     "EMAIL_HOST_PASSWORD": <Gmail account password>,
     "EMAIL_USE_TLS": true
-  },
-  "databases": {
-    "default": {
-      "ENGINE": "django.db.backends.sqlite3",
-      "NAME": "db.sqlite3"
-    }
-  },
-  "aws": {
-    "AWS_STORAGE_BUCKET_NAME": <AWS Bucket name>,
-    "AWS_ACCESS_KEY_ID": <AWS Bucket Access account key ID>,
-    "AWS_SECRET_ACCESS_KEY": <AWS Bucket Access account secret access key>
   },
   "facebook": {
     "FACEBOOK_APP_ID": <Facebook app id>,
