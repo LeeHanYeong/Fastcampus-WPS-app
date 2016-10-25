@@ -63,6 +63,20 @@ eval "$(pyenv virtualenv-init -)"
 
 -
 
+#### PostrgreSQL
+
+본 프로젝트에서는 PostgreSQL을 사용하고 있지 않지만, DB를 교체할경우를 생각하여 미리 패키지를 설치해줍니다.
+
+**Ubuntu:**
+
+```
+sudo apt-get install postgresql
+sudo apt-get install python-psycopg2
+sudo apt-get install libpq-dev
+```
+
+-
+
 #### Pillow
 
 Python이미지 라이브러리인 Pillow가 필요합니다.
