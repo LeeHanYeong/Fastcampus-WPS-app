@@ -14,6 +14,7 @@ django_app/.conf/
 /static_root/
 static_root/
 /media/
+media/
 less/
 dists/
 db.sqlite3
