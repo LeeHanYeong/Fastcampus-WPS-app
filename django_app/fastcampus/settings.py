@@ -120,6 +120,7 @@ INSTALLED_APPS = [
     'storages',
     'compressor',
 
+    'apis',
     'course',
     'member',
     'projects.blog',
