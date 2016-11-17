@@ -17,6 +17,7 @@
 4. signal또는 Model의 save메서드 오버라이드로 댓글이 달릴 시 간단한 알림을 보내본다
     4-1. 전화번호 필드가 비었을 경우, 보내지않도록한다
 """
+from celery import shared_task
 from sdk.api.message import Message
 from sdk.exceptions import CoolsmsException
 
@@ -24,6 +25,7 @@ api_key = 'NCS5805501D62D8B'
 api_secret = 'A86DF83FB2F77AC52F0322A8B1B294A1'
 
 
+@shared_task
 def send_sms(message, receiver_number):
     if receiver_number is None or len(receiver_number) < 10:
         print('Receiver number invalid')

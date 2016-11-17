@@ -14,10 +14,11 @@
 
   <!-- Custom CSS -->
   {% compress css %}
-  <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/common.sass' %}">
-  <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/video.sass' %}">
-  <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/blog.sass' %}">
-  <link type="text/x-sass" rel="stylesheet" href="{% static 'sass/sns.sass' %}">
+  <link type="text/sass" rel="stylesheet" href="{% static 'sass/common.sass' %}">
+  <link type="text/sass" rel="stylesheet" href="{% static 'sass/video.sass' %}">
+  <link type="text/sass" rel="stylesheet" href="{% static 'sass/blog.sass' %}">
+  <link type="text/sass" rel="stylesheet" href="{% static 'sass/sns.sass' %}">
+  <link type="text/sass" rel="stylesheet" href="{% static 'sass/photo.sass' %}">
   {% endcompress %}
 
   {% block head %}
@@ -56,6 +57,9 @@
           </li>
           <li>
             <a href="{% url 'sns:index' %}">SNS</a>
+          </li>
+          <li>
+            <a href="{% url 'photo:album_list' %}">Photo</a>
           </li>
           {% if user.is_authenticated %}
           <li>
@@ -104,7 +108,7 @@
       <!--<p class="top-description">Django, AngularJS Programmer</p>-->
     <!--</div>-->
 
-    <div>
+    <div class="content-container">
       {% block content %}
       {% endblock %}
     </div>
@@ -114,5 +118,11 @@
   <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
   <!-- Bootstrap JS -->
   <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  <!-- js.cookie -->
+  <script src="{% static 'js/js.cookie.js' %}"></script>
+  <!-- Base JS -->
+  <script src="{% static 'js/base.js' %}"></script>
+  {% block script %}
+  {% endblock %}
 </body>
 </html>

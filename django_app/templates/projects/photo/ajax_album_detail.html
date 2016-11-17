@@ -1,0 +1,95 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div id="album-detail">
+	<h4>{{ album.title }}</h4>
+	<div>
+		<span>{{ album.owner.email }}</span>
+		{% if album.description %}
+		<span>| {{ album.description }}</span>
+		{% endif %}
+	</div>
+	<a href="{% url 'photo:photo_add' album_pk=album.pk %}" class="btn btn-primary btn-sm btn-top-right">
+		<span class="glyphicon glyphicon-plus"></span>
+		Add Photo
+	</a>
+	<div class="photo-list">
+		{% for photo in album.photo_set.all %}
+		<div class="col-xs-6 col-md-3">
+			<div href="" class="thumbnail">
+				<a href="{% url 'photo:photo_detail' pk=photo.pk %}">
+					<img src="{{ photo.img_thumbnail.url }}" alt="">
+				</a>
+				<div class="caption">
+					<div>
+						<strong>{{ photo.title }}</strong>
+					</div>
+					<div>
+						<span>{{ photo.owner.email }}</span>
+						{% if photo.description %}
+						<span>| {{ photo.description }}</span>
+						{% endif %}
+					</div>
+					<div class="like-container">
+						<button id="btn-photo-{{ photo.pk }}-like" onclick="photoLike({{ photo.pk }}, 'like')" class="btn label label-default">
+							<span class="glyphicon glyphicon-thumbs-up"> </span>
+							<span id="photo-{{ photo.pk }}-like-count">{{ photo.like_users.count }}</span>
+						</button>
+
+						<button id="btn-photo-{{ photo.pk }}-dislike" onclick="photoLike({{ photo.pk }}, 'dislike')" class="btn label label-default">
+							<span class="glyphicon glyphicon-thumbs-up"> </span>
+							<span id="photo-{{ photo.pk }}-dislike-count">{{ photo.dislike_users.count }}</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script>
+	function photoLike(photoPk, likeType) {
+		$.ajax({
+			method: 'POST',
+			url: '/projects/photo/ajax/photo/' + photoPk + '/like/' + likeType + '/',
+		})
+			.done(function(response) {
+				console.log(response);
+				var like_count = response.like_count;
+				var dislike_count = response.dislike_count;
+				var user_like = response.user_like;
+				var user_dislike = response.user_dislike;
+
+				var spanLikeCount = $('#photo-' + photoPk + '-like-count');
+				var spanDislikeCount = $('#photo-' + photoPk + '-dislike-count');
+				var btnLike = $('#btn-photo-' + photoPk + '-like');
+				var btnDislike = $('#btn-photo-' + photoPk + '-dislike');
+				spanLikeCount.text(like_count);
+				spanDislikeCount.text(dislike_count);
+
+				if(user_like) {
+					btnLike.addClass('label-info');
+					btnLike.removeClass('label-default');
+				} else {
+					btnLike.removeClass('label-info');
+					btnLike.addClass('label-default');
+				}
+
+				if(user_dislike) {
+					btnDislike.addClass('label-danger');
+					btnDislike.removeClass('label-default');
+				} else {
+					btnDislike.removeClass('label-danger');
+					btnDislike.addClass('label-default');
+				}
+			})
+			.fail(function(response) {
+				console.log(response);
+			});
+	}
+</script>
+{% endblock %}

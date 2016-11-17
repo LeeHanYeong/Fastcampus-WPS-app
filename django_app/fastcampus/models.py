@@ -10,3 +10,8 @@ class BaseModel(models.Model):
 
     def save(self, *args, **kwargs):
         super(BaseModel, self).save(*args, **kwargs)
+
+    def url_field(self, fieldname):
+        field = getattr(self, fieldname)
+        if field and hasattr(field, 'url'):
+            return field.url

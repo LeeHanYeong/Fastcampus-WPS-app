@@ -1,0 +1,1 @@
+*/1 * * * * "source /opt/python/run/venv/bin/activate && python django_app/manage.py send_mail_test"

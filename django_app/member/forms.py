@@ -1,12 +1,21 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import password_validation
+from django.contrib.auth import password_validation, login as auth_login, authenticate
 from member.models import MyUser
 
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='ID', max_length=20, widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}), )
+
+    def login(self, request):
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+        user = authenticate(email=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return True
+        return False
 
 
 class SignupForm(forms.ModelForm):

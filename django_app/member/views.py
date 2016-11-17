@@ -1,20 +1,25 @@
 import requests
 import json
 from urllib.parse import quote
+from django import forms
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponse
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.generic import FormView
+from django.views.generic import TemplateView
+
 from apis import facebook
 from member.forms import LoginForm
 User = get_user_model()
 
 
 def login1(request):
-    login_next = request.GET.get('login_next')
+    login_next = request.GET.get('next')
     if request.method == 'POST':
         try:
             email = request.POST['email']
@@ -38,9 +43,30 @@ def login1(request):
             return redirect('member:login')
     else:
         context = {
-            'login_next': login_next,
+            'next': login_next,
         }
         return render(request, 'member/login.html', context)
+
+
+class Login(TemplateView, FormView):
+    form_class = LoginForm
+    template_name = 'member/login2.html'
+    success_url = '/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class()
+        return context
+
+    def form_valid(self, form):
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(email=username, password=password)
+        if user is not None:
+            login(self.request, user)
+            return super().form_valid(form)
+        return HttpResponse('ID/PW 오류')
+
 
 
 def login2(request):

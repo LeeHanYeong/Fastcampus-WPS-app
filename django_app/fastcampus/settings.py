@@ -1,10 +1,18 @@
 import json
+import sys
 import os
 
 # Debug check
-DEBUG = True
-if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ:
-    DEBUG = False
+# DEBUG = True
+# if 'RDS_HOSTNAME' in os.environ or 'EB_IS_COMMAND_LEADER' in os.environ or 'AWS_ELB_HOME' in os.environ:
+#     DEBUG = False
+# for item in os.environ:
+#     print(item, os.environ[item])
+DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
+if 'USER' in os.environ and os.environ['USER'] == 'Arcanelux':
+    DEBUG = True
+print('DEBUG : %s' % DEBUG)
+
 STATIC_S3 = False
 
 # Directories
@@ -33,11 +41,17 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join(BASE_DIR, '../static_root')
 
 # django-compressor
-COMPRESS_ROOT = STATIC_ROOT
+# COMPRESS_ROOT = STATIC_ROOT
 COMPRESS_PRECOMPILERS = (
-    ('text/x-sass', 'sass {infile} {outfile}'),
+    ('text/sass', 'sass {infile} {outfile}'),
 )
+COMPRESS_CACHEABLE_PRECOMPILERS = (
+    'text/sass',
+)
+COMPRESS_ENABLED = True
 
+# Celery
+# BROKER_URL = 'amqp://guest:guest@localhost//'
 
 # AWS
 if not DEBUG or STATIC_S3:
@@ -86,6 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+LOGIN_URL = 'member:login'
 
 # Facebook
 FACEBOOK_APP_ID = config['facebook']['FACEBOOK_APP_ID']
@@ -216,6 +231,14 @@ EMAIL_HOST_USER = config['email']['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = config['email']['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = config['email']['EMAIL_USE_TLS']
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    },
+}
 
 
 # Other settings

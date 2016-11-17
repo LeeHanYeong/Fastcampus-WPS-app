@@ -13,5 +13,5 @@ def send_comment_mail(sender, instance, **kwargs):
         instance.content
     )
     print('send_comment_mail')
-    send_mail(title, content)
-    send_sms(content, instance.post.author.phone_number)
+    send_mail.delay(title, content)
+    # send_sms.delay(content, instance.post.author.phone_number)
