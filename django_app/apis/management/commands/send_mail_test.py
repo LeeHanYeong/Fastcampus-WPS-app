@@ -10,4 +10,6 @@ config = json.loads(open(os.path.join(CONF_DIR, 'settings_debug.json')).read())
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        print('===SendMailTest Start===')
         send_test()
+        print('===SendMailTest End===')
