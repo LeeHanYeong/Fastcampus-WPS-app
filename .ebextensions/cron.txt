@@ -1,1 +1,1 @@
-* * * * * ec2-user source /opt/python/run/venv/bin/activate && python /opt/python/current/app/django_app/manage.py send_mail_test
+* * * * * source /opt/python/run/venv/bin/activate && python /opt/python/current/app/django_app/manage.py send_mail_test
