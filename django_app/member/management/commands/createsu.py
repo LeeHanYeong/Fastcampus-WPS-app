@@ -2,7 +2,8 @@ import json
 import os
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from member.models import MyUser as User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 CONF_DIR = settings.CONF_DIR
 config = json.loads(open(os.path.join(CONF_DIR, 'settings_debug.json')).read())
 

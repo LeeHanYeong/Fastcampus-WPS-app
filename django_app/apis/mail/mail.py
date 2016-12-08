@@ -8,6 +8,7 @@ __all__ = [
 ]
 
 
+@shared_task
 def send_test():
     django_send_mail('Subject', 'Message', settings.DEFAULT_FROM_EMAIL, ['arcanelux@gmail.com'])
 
@@ -21,3 +22,4 @@ def send_mail(subject, message, recipient_list=None):
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=recipient_list if recipient_list else default_recipient_list
     )
+    print('Send mail! (%s, %s)' % (subject, message))

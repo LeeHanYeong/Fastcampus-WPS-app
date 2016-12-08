@@ -1,4 +1,5 @@
 from django.db import models
+from adminsortable.models import SortableMixin
 
 
 class BaseModel(models.Model):
@@ -15,3 +16,11 @@ class BaseModel(models.Model):
         field = getattr(self, fieldname)
         if field and hasattr(field, 'url'):
             return field.url
+
+
+class PriorityMixin(SortableMixin):
+    priority = models.PositiveIntegerField(default=0, db_index=True)
+
+    class Meta:
+        abstract = True
+        ordering = ('priority', )

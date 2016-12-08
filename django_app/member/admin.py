@@ -22,7 +22,9 @@ class MyUserAdmin(UserAdmin):
     form = MyUserChangeForm
     list_display = ('email', 'full_name', )
     list_filter = ('is_staff', )
-    readonly_fields = ('is_superuser', 'last_login', 'joined_date', )
+    # readonly_fields = ('is_superuser', 'last_login', 'joined_date', )
+    readonly_fields = ('last_login', 'joined_date',)
+    filter_horizontal = ()
 
     fieldsets = (
         (None, {
@@ -66,4 +68,4 @@ class MyUserAdmin(UserAdmin):
     ordering = ('email', )
 
 
-admin.site.register(MyUser, MyUserAdmin)
+# admin.site.register(MyUser, MyUserAdmin)

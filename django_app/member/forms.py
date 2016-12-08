@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import password_validation, login as auth_login, authenticate
-from member.models import MyUser
+from django.contrib.auth import get_user_model, password_validation, login as auth_login, authenticate
+User = get_user_model()
 
 
 class LoginForm(forms.Form):
@@ -23,7 +23,7 @@ class SignupForm(forms.ModelForm):
     password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
-        model = MyUser
+        model = User
         fields = (
             'email',
             'last_name',

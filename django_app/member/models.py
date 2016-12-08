@@ -23,7 +23,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class MyUser(AbstractBaseUser, PermissionsMixin):
+class MyUser(AbstractBaseUser):
     CHOICES_GENDER = (
         ('male', 'Male'),
         ('female', 'Female'),

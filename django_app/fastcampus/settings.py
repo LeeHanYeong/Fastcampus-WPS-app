@@ -1,3 +1,4 @@
+import urllib.parse
 import json
 import sys
 import os
@@ -8,12 +9,18 @@ import os
 #     DEBUG = False
 # for item in os.environ:
 #     print(item, os.environ[item])
+
+
 DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
 if 'USER' in os.environ and os.environ['USER'] == 'Arcanelux':
     DEBUG = True
 print('DEBUG : %s' % DEBUG)
 
-STATIC_S3 = False
+# USING_AWS = False
+USING_AWS = True
+if os.environ.get('aws', False):
+    USING_AWS = True
+print('USING_AWS : %s' % USING_AWS)
 
 # Directories
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,7 +61,7 @@ COMPRESS_ENABLED = True
 # BROKER_URL = 'amqp://guest:guest@localhost//'
 
 # AWS
-if not DEBUG or STATIC_S3:
+if not DEBUG or USING_AWS:
     AWS_HEADERS = {
         'Expires': 'Thu, 31 Dec 2199 20:00:00 GMT',
         'Cache-Control': 'max-age=94608000',
@@ -80,12 +87,37 @@ else:
     STATIC_URL = '/static/'
     MEDIA_URL = '/media/'
 
+# Celery with SQS
+if not DEBUG or USING_AWS:
+    AWS_ACCESS_KEY_ID = config['aws']['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = config['aws']['AWS_SECRET_ACCESS_KEY']
+    CELERY_BROKER_URL = 'sqs://{}:{}@'.format(
+        urllib.parse.quote(AWS_ACCESS_KEY_ID, safe=''),
+        urllib.parse.quote(AWS_SECRET_ACCESS_KEY, safe=''),
+    )
+    CELERY_BROKER_TRANSPORT_OPTIONS = {
+        'region': 'us-east-1',
+        'polling_interval': 3,
+        'visibility_timeout': 3600,
+        'queue_name_prefix': 'lhy-',
+    }
+else:
+    pass
+
+# Celery
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_IMPORTS = (
+    'apis.mail.asdf',
+)
+print(CELERY_BROKER_URL)
+
 # Auth
-AUTH_USER_MODEL = 'member.MyUser'
-AUTHENTICATION_BACKENDS = [
+AUTH_USER_MODEL = 'member_rest_auth.MyUser'
+SOCIAL_AUTH_USER_MODEL = AUTH_USER_MODEL
+AUTHENTICATION_BACKENDS = (
+    'social.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-    'member.backends.FacebookBackend',
-]
+)
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -100,7 +132,51 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-LOGIN_URL = 'member:login'
+# LOGIN_URL = 'member:login'
+
+# python-social-auth
+SOCIAL_AUTH_FACEBOOK_KEY = config['facebook']['FACEBOOK_APP_ID']
+SOCIAL_AUTH_FACEBOOK_SECRET = config['facebook']['FACEBOOK_SECRET_CODE']
+SOCIAL_AUTH_PIPELINE = (
+    # 사용자에 대한 정보를 얻고 간단한 형식으로 반환하여 나중에 사용자 인스턴스를 만듭니다.
+    # 경우에 따라 세부 정보가 이미 공급자의 인증 응답에 포함되어 있지만 때로는 공급자 API에 충돌 할 수 있습니다.
+    'social.pipeline.social_auth.social_details',
+
+    # 우리가 제공하는 서비스에서 Social uid를 받으십시오.
+    # uid는 공급자로부터 주어진 사용자의 고유한 식별자입니다.
+    'social.pipeline.social_auth.social_uid',
+
+    # 현재 인증 프로세스가 현재 프로젝트에서 유효하다는 것을 확인합니다.
+    # 이는 허용 목록 (정의 된 경우)이 적용되는 이메일 및 도메인입니다.
+    'social.pipeline.social_auth.auth_allowed',
+
+    # 현재 소셜 계정이 이미 사이트에 연결되어 있는지 확인합니다.
+    'social.pipeline.social_auth.social_user',
+
+    # 이 사람의 사용자 이름을 확인하고, 충돌이 있으면 끝에 임의의 문자열을 추가합니다.
+    'social.pipeline.user.get_username',
+
+    # 사용자에게 전자 메일 주소를 확인하는 유효성 검사 전자 메일을 보냅니다.
+    # 기본적으로 사용하지 않도록 설정되어 있습니다.
+    # 'social.pipeline.mail.mail_validation',
+
+    # 현재 소셜 세부 정보를 유사한 이메일 주소를 가진 다른 사용자 계정과 연결합니다.
+    # 기본적으로 사용하지 않도록 설정되어 있습니다.
+    # 'social.pipeline.social_auth.associate_by_email',
+
+    # 아직 계정을 찾지 못한 경우 사용자 계정을 만듭니다.
+    'social.pipeline.user.create_user',
+
+    # 이 사용자와 소셜 계정을 연결 한 레코드를 만듭니다.
+    'social.pipeline.social_auth.associate_user',
+
+    # 소셜 레코드의 extra_data 필드에 설정에 지정된 값
+    # (기본값은 access_token 등)을 채웁니다.
+    'social.pipeline.social_auth.load_extra_data',
+
+    # 인증 서비스에서 변경된 정보로 사용자 레코드를 업데이트합니다.
+    'social.pipeline.user.user_details',
+)
 
 # Facebook
 FACEBOOK_APP_ID = config['facebook']['FACEBOOK_APP_ID']
@@ -117,22 +193,38 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
+    'rest_framework',
+    'rest_framework.authtoken',
+    'social.apps.django_app.default',
+    'rest_social_auth',
+
     'storages',
     'compressor',
+    'markdownx',
+    'adminsortable',
+    'django_celery_results',
+    'django_celery_beat',
+    'corsheaders',
 
     'apis',
     'course',
     'member',
+    'member_rest_auth',
     'projects.blog',
     'projects.photo',
     'projects.video',
     'projects.sns',
 ]
 
+CORS_ORIGIN_WHITELIST = (
+    'localhost:4000',
+)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -240,6 +332,32 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
     },
 }
+
+# django-markdownx
+# Markdownify
+MARKDOWNX_MARKDOWNIFY_FUNCTION = 'markdownx.utils.markdownify' # Default function that compiles markdown using defined extensions. Using custom function can allow you to pre-process or post-process markdown text. See below for more info.
+
+# Markdown extensions
+MARKDOWNX_MARKDOWN_EXTENSIONS = [] # List of used markdown extensions. See below for more info.
+MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {} # Configuration object for used markdown extensions
+
+# Markdown urls
+MARKDOWNX_URLS_PATH = '/markdownx/markdownify/' # URL that returns compiled markdown text.
+MARKDOWNX_UPLOAD_URLS_PATH = '/markdownx/upload/' # URL that accepts file uploads, returns markdown notation of the image.
+
+# Media path
+MARKDOWNX_MEDIA_PATH = 'markdownx/' # Path, where images will be stored in MEDIA_ROOT folder
+
+# Image
+MARKDOWNX_UPLOAD_MAX_SIZE = 52428800 # 50MB - maximum file size
+MARKDOWNX_UPLOAD_CONTENT_TYPES = ['image/jpeg', 'image/png'] # Acceptable file content types
+MARKDOWNX_IMAGE_MAX_SIZE = {'size': (500, 500), 'quality': 90,} # Different options describing final image processing: size, compression etc. See below for more info.
+
+# Editor
+MARKDOWNX_EDITOR_RESIZABLE = True # Update editor's height to inner content height while typing
+
+
+# Django Admin Sortable
 
 
 # Other settings

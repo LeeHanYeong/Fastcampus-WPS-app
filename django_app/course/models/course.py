@@ -1,6 +1,10 @@
 from django.db import models
 from fastcampus.models import BaseModel
 
+__all__ = [
+    'Course',
+]
+
 
 class Course(BaseModel):
     CHOICES_TYPE = (
@@ -21,13 +25,3 @@ class Course(BaseModel):
     @property
     def full_title(self):
         return '%s %s기' % (self.title, self.number)
-
-
-class LectureVideo(BaseModel):
-    course = models.ForeignKey(Course, verbose_name='해당 코스')
-    title = models.CharField('강의 제목', max_length=100)
-    description = models.CharField('설명', max_length=200, blank=True)
-    youtube_url = models.CharField(max_length=300, blank=True)
-
-    def __str__(self):
-        return self.title
